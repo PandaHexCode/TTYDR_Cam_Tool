@@ -1,5 +1,5 @@
 # TTYDR_Cam_Tool
-A python script to extract and pack mapname.cam.zst files for TTYD Remake
+A python script to extract and pack .cam.zst files for TTYD Remake
 
 # How to use it
 First you need to have pyhton installed, and then you need to run that command <br>
