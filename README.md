@@ -1,5 +1,6 @@
 # TTYDR_Cam_Tool
 A python script to extract and pack .cam.zst files for TTYD Remake
+The tool is currently in the testing phase and is not yet fully developed.
 
 # How to use it
 First you need to have pyhton installed, and then you need to run that command <br>
