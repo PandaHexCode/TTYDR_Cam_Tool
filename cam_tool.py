@@ -328,7 +328,7 @@ def extract(cam_zst_path: str, out_json_path: str = None):
     with open(out_json_path, 'w', encoding='utf-8') as f:
         json.dump(result, f, indent=2, ensure_ascii=False)
 
-    print(f"  {len(curves)} Kurven  |  {len(shapes)} Shapes  |  {len(areas)} Areas  "
+    print(f"  {len(curves)} Curves  |  {len(shapes)} Shapes  |  {len(areas)} Areas  "
           f"|  {len(play_shapes)} PlayShapes  |  {len(vtx)} Vertices")
     print(f"  ✓ {out_json_path}")
     return out_json_path
@@ -353,12 +353,12 @@ def pack(json_path: str, out_path: str = None):
         found = list(p.parent.glob('*.cam.zst'))
         if found:
             orig = found[0]
-            print(f"  Basis: {orig.name} (aus Ordner gewählt)")
+            print(f"  Base: {orig.name} (selected from folder)")
         else:
-            print(f"FEHLER: Original '{src}' nicht im selben Ordner gefunden.")
+            print(f"ERROR: Original '{src}' not found in the same folder.")
             sys.exit(1)
     else:
-        print(f"  Basis: {orig.name}")
+        print(f"  Base: {orig.name}")
 
     raw  = bytearray(zstd.ZstdDecompressor().decompress(orig.read_bytes()))
     syms = parse_symbols(bytes(raw))
@@ -366,7 +366,7 @@ def pack(json_path: str, out_path: str = None):
     def write(name, new_bytes):
         off, sz = syms[name]
         if len(new_bytes) != sz:
-            print(f"  WARNUNG: '{name}' Größe {sz} → {len(new_bytes)} B")
+            print(f"  WARNING: '{name}' size {sz} → {len(new_bytes)} B")
         raw[off: off + sz] = new_bytes[:sz]
 
     write('camera',    encode_camera(d['camera']))
@@ -423,7 +423,7 @@ def info(cam_zst_path: str):
     print(f"  {p.name}")
     print(f"{'='*60}")
     print(f"  FOV {cam['fov']}°   Near {cam['near']}   Far {cam['far']}")
-    print(f"  Kurven:     {len(cb)//CURVE_SIZE}")
+    print(f"  Curves:     {len(cb)//CURVE_SIZE}")
     print(f"  Shapes:     {len(sb)//SHAPE_SIZE}")
     print(f"  Areas:      {len(ab)//AREA_SIZE}")
     print(f"  PlayShapes: {len(pb)//PLAYSHAPE_SIZE}")
@@ -431,7 +431,7 @@ def info(cam_zst_path: str):
     print(f"  Faces:      {len(sec('face'))//8}")
     print(f"  PathPoints: {len(sec('point'))//12}")
 
-    print(f"\n  Kurven:")
+    print(f"\n  Curves:")
     for i in range(len(cb)//CURVE_SIZE):
         c = decode_curve(cb[i*CURVE_SIZE:(i+1)*CURVE_SIZE])
         print(f"    [{i:2d}] {c['name']:<30}  zoom_offset={c['zoom_offset']}  "
@@ -443,7 +443,7 @@ def info(cam_zst_path: str):
         s = decode_shape(sb[i*SHAPE_SIZE:(i+1)*SHAPE_SIZE])
         print(f"    [{i:2d}] {s['name']:<35}  faces [{s['face_start']}..{s['face_start']+s['face_count']-1}]")
 
-    print(f"\n  Areas (Clip-Bereiche):")
+    print(f"\n  Areas (Clip Zones):")
     for i in range(len(ab)//AREA_SIZE):
         a = decode_area(ab[i*AREA_SIZE:(i+1)*AREA_SIZE])
         print(f"    [{i:2d}] {a['name']:<30}  clipZ=[{a['clip_minZ']:.1f}..{a['clip_maxZ']:.1f}]"
@@ -470,14 +470,14 @@ def main():
         rest = rest[:idx] + rest[idx+2:]
 
     if not rest:
-        print("Fehler: Keine Eingabedatei angegeben.")
+        print("Error: No input file specified.")
         sys.exit(1)
 
     if   cmd == 'extract': extract(rest[0], out)
     elif cmd == 'pack'   : pack(rest[0], out)
     elif cmd == 'info'   : info(rest[0])
     else:
-        print(f"Unbekannter Befehl '{cmd}'. Benutze: extract | pack | info")
+        print(f"Unknown command '{cmd}'. Use: extract | pack | info")
         sys.exit(1)
 
 if __name__ == '__main__':
