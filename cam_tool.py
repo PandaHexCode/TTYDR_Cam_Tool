@@ -4,10 +4,10 @@ from pathlib import Path
 try:
     import zstandard as zstd
 except ImportError:
-    import subprocess
-    subprocess.check_call([sys.executable, "-m", "pip", "install",
-                           "zstandard", "--break-system-packages", "-q"])
-    import zstandard as zstd
+    print("Error: zstandard is not installed.")
+    print("Install it with:  pip install zstandard")
+    print("Or in a venv:     python -m venv venv && venv/bin/pip install zstandard")
+    sys.exit(1)
 
 CURVE_SIZE     = 0x10C                              
 SHAPE_SIZE     = 0x68                               
